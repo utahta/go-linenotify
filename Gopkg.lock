@@ -1,0 +1,13 @@
+memo = "b4a658b162ec0219ba87f962ea3a56cae8a4c0eaf40dc92a588c0bde6430572a"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  revision = "248dadf4e9068a0b3e79f02ed0a610d935de5302"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/utahta/go-openuri"
+  packages = ["."]
+  revision = "2e02285e49a489aab86e7080f5db56c7af1758b8"
