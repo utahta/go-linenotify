@@ -8,6 +8,11 @@ Go client library for the [LINE Notify](https://notify-bot.line.me/doc/)
 go get github.com/utahta/go-linenotify
 ```
 
+## Example
+
+- [Authorize](example/auth)
+- [Notify](example/notify)
+
 ## Contributing
 
 1. Fork it ( https://github.com/utahta/go-linenotify/fork )
