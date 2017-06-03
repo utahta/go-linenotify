@@ -9,11 +9,8 @@ import (
 func main() {
 	token := "" // EDIT THIS
 
-	c := linenotify.New(linenotify.WithToken(token))
-	c.Notify("hello world", "", "", nil)
-
-	c = linenotify.New()
-	c.SetToken(token)
-	c.Notify("hello world", "http://localhost/thumb.jpg", "http://localhost/full.jpg", nil)
-	c.Notify("hello world", "", "", bytes.NewReader([]byte("image bytes")))
+	c := linenotify.New()
+	c.Notify(token, "hello world", "", "", nil)
+	c.Notify(token, "hello world", "http://localhost/thumb.jpg", "http://localhost/full.jpg", nil)
+	c.Notify(token, "hello world", "", "", bytes.NewReader([]byte("image bytes")))
 }

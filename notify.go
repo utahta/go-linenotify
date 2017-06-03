@@ -15,65 +15,47 @@ import (
 
 type Client struct {
 	HTTPClient *http.Client
-	token      string
 }
-
-type ClientOption func(*Client)
 
 var (
 	ErrNotifyInvalidAccessToken = errors.New("Invalid access token.")
 )
 
-// https://notify-bot.line.me/doc/ja/
-func New(options ...ClientOption) *Client {
-	c := &Client{HTTPClient: http.DefaultClient}
-
-	for _, opt := range options {
-		opt(c)
-	}
-	return c
+// https://notify-bot.line.me/doc/
+func New() *Client {
+	return &Client{HTTPClient: http.DefaultClient}
 }
 
-func WithToken(token string) ClientOption {
-	return func(c *Client) {
-		c.token = token
-	}
-}
-
-func (c *Client) SetToken(token string) {
-	c.token = token
-}
-
-func (c *Client) Notify(message, imageThumbnail, imageFullsize string, image io.Reader) error {
+func (c *Client) Notify(token, message, imageThumbnail, imageFullsize string, image io.Reader) error {
 	if image != nil {
-		return c.NotifyWithImage(message, image)
+		return c.NotifyWithImage(token, message, image)
 	}
-	return c.NotifyWithImageURL(message, imageThumbnail, imageFullsize)
+	return c.NotifyWithImageURL(token, message, imageThumbnail, imageFullsize)
 }
 
-func (c *Client) NotifyWithImage(message string, image io.Reader) error {
+func (c *Client) NotifyWithImage(token, message string, image io.Reader) error {
 	body, contentType, err := c.requestBodyWithImage(message, image)
 	if err != nil {
 		return err
 	}
-	return c.notify(message, body, contentType)
+	return c.notify(token, message, body, contentType)
 }
 
-func (c *Client) NotifyWithImageURL(message, imageThumbnail, imageFullsize string) error {
+func (c *Client) NotifyWithImageURL(token, message, imageThumbnail, imageFullsize string) error {
 	body, contentType, err := c.requestBody(message, imageThumbnail, imageFullsize)
 	if err != nil {
 		return err
 	}
-	return c.notify(message, body, contentType)
+	return c.notify(token, message, body, contentType)
 }
 
-func (c *Client) notify(message string, body io.Reader, contentType string) error {
+func (c *Client) notify(token, message string, body io.Reader, contentType string) error {
 	req, err := http.NewRequest("POST", "https://notify-api.line.me/api/notify", body)
 	if err != nil {
 		return err
 	}
 	req.Header.Set("Content-Type", contentType)
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.token))
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
 
 	resp, err := c.HTTPClient.Do(req)
 	if err != nil {
