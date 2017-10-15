@@ -1,5 +1,7 @@
 # go-linenotify
 
+[![Build Status](https://travis-ci.org/utahta/go-linenotify.svg?branch=master)](https://travis-ci.org/utahta/go-linenotify)
+
 Go client library for the [LINE Notify](https://notify-bot.line.me/doc/)
 
 ## Install
