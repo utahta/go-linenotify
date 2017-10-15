@@ -20,6 +20,7 @@ type TokenResponse struct {
 	AccessToken string `json:"access_token"`
 }
 
+// NewToken returns *TokenClient
 func NewToken(code, redirectURI, clientID, clientSecret string) *TokenClient {
 	return &TokenClient{
 		HTTPClient:   http.DefaultClient,
@@ -30,6 +31,7 @@ func NewToken(code, redirectURI, clientID, clientSecret string) *TokenClient {
 	}
 }
 
+// Get returns access token
 func (c *TokenClient) Get() (string, error) {
 	v := url.Values{}
 	v.Add("grant_type", "authorization_code")

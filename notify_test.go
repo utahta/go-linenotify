@@ -23,7 +23,8 @@ func (t *notifyRoundTripper) RoundTrip(req *http.Request) (*http.Response, error
 
 func TestClient_Notify(t *testing.T) {
 	c := New()
-	body := ioutil.NopCloser(strings.NewReader(""))
+	statusOK := `{"status":200,"message":"ok"}`
+	statusUnauthorized := `{"status":401,"message":"invalid access token"}`
 	tests := []struct {
 		resp           *http.Response
 		imageThumbnail string
@@ -32,16 +33,16 @@ func TestClient_Notify(t *testing.T) {
 		expectedErr    error
 		explain        string
 	}{
-		{&http.Response{StatusCode: http.StatusOK, Body: body}, "", "", nil, nil, "ok: message"},
-		{&http.Response{StatusCode: http.StatusOK, Body: body}, "image.jpg", "image.jpg", nil, nil, "ok: message image url"},
-		{&http.Response{StatusCode: http.StatusOK, Body: body}, "", "", bytes.NewReader([]byte("image file")), nil, "ok: message image"},
-		{&http.Response{StatusCode: http.StatusUnauthorized, Body: body}, "", "", nil, ErrNotifyInvalidAccessToken, "ng: message"},
+		{&http.Response{StatusCode: http.StatusOK, Body: ioutil.NopCloser(strings.NewReader(statusOK))}, "", "", nil, nil, "ok: message"},
+		{&http.Response{StatusCode: http.StatusOK, Body: ioutil.NopCloser(strings.NewReader(statusOK))}, "image.jpg", "image.jpg", nil, nil, "ok: message image url"},
+		{&http.Response{StatusCode: http.StatusOK, Body: ioutil.NopCloser(strings.NewReader(statusOK))}, "", "", bytes.NewReader([]byte("image file")), nil, "ok: message image"},
+		{&http.Response{StatusCode: http.StatusUnauthorized, Body: ioutil.NopCloser(strings.NewReader(statusUnauthorized))}, "", "", nil, ErrNotifyInvalidAccessToken, "ng: message"},
 	}
 
 	for _, test := range tests {
 		c.HTTPClient.Transport = &notifyRoundTripper{resp: test.resp}
 
-		err := c.Notify("token", "test", test.imageThumbnail, test.imageFullsize, test.image)
+		_, err := c.Notify("token", "test", test.imageThumbnail, test.imageFullsize, test.image)
 		if err != test.expectedErr {
 			t.Errorf("%v err:%v", test.explain, err)
 		}
