@@ -1,4 +1,4 @@
-package linenotify
+package auth
 
 import (
 	"net/http"
@@ -6,8 +6,8 @@ import (
 	"testing"
 )
 
-func TestNewAuthorization(t *testing.T) {
-	req, err := NewAuthorization("id", "http://localhost")
+func TestNew(t *testing.T) {
+	req, err := New("id", "http://localhost")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -16,13 +16,13 @@ func TestNewAuthorization(t *testing.T) {
 		t.Errorf("Expect form_post, got %v", req.ResponseMode)
 	}
 
-	if len(req.State) != 44 {
+	if len(req.State) != 36 {
 		t.Errorf("Expect state length 44, got %v", len(req.State))
 	}
 }
 
-func TestAuthorization_RequestURL(t *testing.T) {
-	req, err := NewAuthorization("id", "http://localhost/linenotify_test")
+func TestClient_RequestURL(t *testing.T) {
+	req, err := New("id", "http://localhost/linenotify_test")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -57,7 +57,7 @@ func TestAuthorization_RequestURL(t *testing.T) {
 	}
 }
 
-func TestParseAuthorization(t *testing.T) {
+func TestParseAuthorize(t *testing.T) {
 
 	tests := []struct {
 		urlValues   url.Values
@@ -80,7 +80,7 @@ func TestParseAuthorization(t *testing.T) {
 
 	for _, test := range tests {
 		req := &http.Request{Form: test.urlValues}
-		resp, err := ParseAuthorization(req)
+		resp, err := ParseAuthorize(req)
 
 		if test.expectError {
 			if err == nil {

@@ -1,43 +1,48 @@
-package linenotify
+package auth
 
 import (
-	"crypto/rand"
-	"encoding/base64"
 	"net/http"
 	"net/url"
 
+	"github.com/google/uuid"
 	"github.com/pkg/errors"
 )
 
-type AuthorizationClient struct {
-	ClientID     string
-	RedirectURI  string
-	ResponseMode string
-	State        string
-}
+type (
+	// Client represents LINE Notify authorization
+	Client struct {
+		ClientID     string
+		RedirectURI  string
+		ResponseMode string
+		State        string
+	}
 
-type AuthorizationResponse struct {
-	Code             string
-	State            string
-	Error            string
-	ErrorDescription string
-}
+	// AuthorizeResponse represents LINE Notify authorize response
+	AuthorizeResponse struct {
+		Code             string
+		State            string
+		Error            string
+		ErrorDescription string
+	}
+)
 
-func NewAuthorization(clientID, redirectURI string) (*AuthorizationClient, error) {
-	state, err := generateHash()
+// New returns Client
+func New(clientID, redirectURI string) (*Client, error) {
+	randomID, err := uuid.NewRandom()
 	if err != nil {
 		return nil, err
 	}
 
-	return &AuthorizationClient{
+	return &Client{
 		ClientID:     clientID,
 		RedirectURI:  redirectURI,
 		ResponseMode: "form_post",
-		State:        state,
+		State:        randomID.String(),
 	}, nil
 }
 
-func (c *AuthorizationClient) RequestURL() (string, error) {
+// RequestURL builds request url with parameters
+func (c *Client) RequestURL() (string, error) {
 	u, err := url.Parse("https://notify-bot.line.me/oauth/authorize")
 	if err != nil {
 		return "", err
@@ -55,7 +60,8 @@ func (c *AuthorizationClient) RequestURL() (string, error) {
 	return u.String(), nil
 }
 
-func (c *AuthorizationClient) Redirect(w http.ResponseWriter, req *http.Request) error {
+// Redirect redirect to request url
+func (c *Client) Redirect(w http.ResponseWriter, req *http.Request) error {
 	urlStr, err := c.RequestURL()
 	if err != nil {
 		return err
@@ -64,17 +70,9 @@ func (c *AuthorizationClient) Redirect(w http.ResponseWriter, req *http.Request)
 	return nil
 }
 
-func generateHash() (string, error) {
-	b := make([]byte, 32)
-	_, err := rand.Read(b)
-	if err != nil {
-		return "", err
-	}
-	return base64.StdEncoding.EncodeToString(b), nil
-}
-
-func ParseAuthorization(r *http.Request) (*AuthorizationResponse, error) {
-	resp := &AuthorizationResponse{
+// ParseAuthorize parses authorize request
+func ParseAuthorize(r *http.Request) (*AuthorizeResponse, error) {
+	resp := &AuthorizeResponse{
 		Code:             r.FormValue("code"),
 		State:            r.FormValue("state"),
 		Error:            r.FormValue("error"),

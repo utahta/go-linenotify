@@ -58,3 +58,8 @@
 [[constraint]]
   branch = "master"
   name = "github.com/utahta/go-openuri"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/google/uuid"
+

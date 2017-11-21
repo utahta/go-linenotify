@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/google/uuid"
 	"github.com/pkg/errors"
 )
 
@@ -100,12 +101,12 @@ func (c *Client) requestBodyWithImage(message string, image io.Reader) (io.Reade
 		return nil, "", err
 	}
 
-	filename, err := generateHash()
+	randomID, err := uuid.NewRandom()
 	if err != nil {
 		return nil, "", err
 	}
 
-	fw, err := w.CreateFormFile("imageFile", filename)
+	fw, err := w.CreateFormFile("imageFile", randomID.String())
 	if err != nil {
 		return nil, "", err
 	}

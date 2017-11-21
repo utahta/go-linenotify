@@ -3,6 +3,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/google/uuid"
+  packages = ["."]
+  revision = "8c31c18f31ede9fc8eae72290a7e7a8064e9b3e3"
+
+[[projects]]
+  branch = "master"
   name = "github.com/pkg/errors"
   packages = ["."]
   revision = "248dadf4e9068a0b3e79f02ed0a610d935de5302"
@@ -22,6 +28,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "d8570579f6500e951d2a08bca885a1bb6b0088e238e91b3508acb89d579c5237"
+  inputs-digest = "0a67cc7ea8cee676ad3b5d15f1b2314d7d690405ac3543c7b20ddb0269de3d9a"
   solver-name = "gps-cdcl"
   solver-version = 1
