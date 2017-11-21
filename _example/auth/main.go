@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/utahta/go-linenotify"
+	"github.com/utahta/go-linenotify/auth"
 	"github.com/utahta/go-linenotify/token"
 )
 
@@ -17,7 +17,7 @@ var (
 )
 
 func Authorize(w http.ResponseWriter, req *http.Request) {
-	c, err := linenotify.NewAuthorization(ClientID, BaseURL+"/callback")
+	c, err := auth.New(ClientID, BaseURL+"/callback")
 	if err != nil {
 		fmt.Fprintf(w, "error:%v", err)
 		return
@@ -28,7 +28,7 @@ func Authorize(w http.ResponseWriter, req *http.Request) {
 }
 
 func Callback(w http.ResponseWriter, req *http.Request) {
-	resp, err := linenotify.ParseAuthorization(req)
+	resp, err := auth.ParseAuthorize(req)
 	if err != nil {
 		fmt.Fprintf(w, "error:%v", err)
 		return
