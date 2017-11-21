@@ -12,8 +12,8 @@ go get github.com/utahta/go-linenotify
 
 ## Example
 
-- [Authorize](_example/auth)
-- [Notify](_example/notify)
+- [Authorize](_example/auth/main.go)
+- [Notify](_example/notify/main.go)
 
 ## Contributing
 
