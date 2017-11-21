@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/utahta/go-linenotify"
+	"github.com/utahta/go-linenotify/token"
 )
 
 // EDIT THIS
@@ -43,14 +44,14 @@ func Callback(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	c := linenotify.NewToken(resp.Code, BaseURL+"/callback", ClientID, ClientSecret)
-	token, err := c.Get()
+	c := token.New(BaseURL+"/callback", ClientID, ClientSecret)
+	accessToken, err := c.GetAccessToken(resp.Code)
 	if err != nil {
 		fmt.Fprintf(w, "error:%v", err)
 		return
 	}
 
-	fmt.Fprintf(w, "token:%v", token)
+	fmt.Fprintf(w, "token:%v", accessToken)
 }
 
 func main() {

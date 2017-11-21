@@ -51,10 +51,10 @@
 
 
 
-[[dependencies]]
+[[constraint]]
   branch = "master"
   name = "github.com/pkg/errors"
 
-[[dependencies]]
+[[constraint]]
   branch = "master"
   name = "github.com/utahta/go-openuri"

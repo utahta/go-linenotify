@@ -1,4 +1,4 @@
-package linenotify
+package token
 
 import (
 	"io/ioutil"
@@ -21,13 +21,14 @@ func (t *getTokenTransport) RoundTrip(req *http.Request) (*http.Response, error)
 }
 
 func TestToken_Get(t *testing.T) {
-	req := NewToken("code", "http://localhost", "id", "secret")
-	req.HTTPClient.Transport = &getTokenTransport{
+	httpClient := &http.Client{}
+	httpClient.Transport = &getTokenTransport{
 		StatusCode: http.StatusOK,
 		Body:       `{"access_token": "test_token"}`,
 	}
+	req := New("http://localhost", "id", "secret", WithHTTPClient(httpClient))
 
-	token, err := req.Get()
+	token, err := req.GetAccessToken("code")
 	if err != nil {
 		t.Fatal(err)
 	}
