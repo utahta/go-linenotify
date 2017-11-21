@@ -28,7 +28,7 @@ func Authorize(w http.ResponseWriter, req *http.Request) {
 }
 
 func Callback(w http.ResponseWriter, req *http.Request) {
-	resp, err := auth.ParseAuthorize(req)
+	resp, err := auth.ParseRequest(req)
 	if err != nil {
 		fmt.Fprintf(w, "error:%v", err)
 		return

@@ -70,8 +70,8 @@ func (c *Client) Redirect(w http.ResponseWriter, req *http.Request) error {
 	return nil
 }
 
-// ParseAuthorize parses authorize request
-func ParseAuthorize(r *http.Request) (*AuthorizeResponse, error) {
+// ParseRequest parses authorize request
+func ParseRequest(r *http.Request) (*AuthorizeResponse, error) {
 	resp := &AuthorizeResponse{
 		Code:             r.FormValue("code"),
 		State:            r.FormValue("state"),

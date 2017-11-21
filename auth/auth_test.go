@@ -80,7 +80,7 @@ func TestParseAuthorize(t *testing.T) {
 
 	for _, test := range tests {
 		req := &http.Request{Form: test.urlValues}
-		resp, err := ParseAuthorize(req)
+		resp, err := ParseRequest(req)
 
 		if test.expectError {
 			if err == nil {
