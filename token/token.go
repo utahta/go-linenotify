@@ -9,12 +9,8 @@ import (
 )
 
 type (
-	// Client interface
-	Client interface {
-		GetAccessToken(string) (string, error)
-	}
-
-	client struct {
+	// Client represents api client that get access token
+	Client struct {
 		HTTPClient   *http.Client
 		RedirectURI  string
 		ClientID     string
@@ -26,12 +22,12 @@ type (
 	}
 
 	// Option with client
-	Option func(*client)
+	Option func(*Client)
 )
 
-// New returns token get client
-func New(redirectURI, clientID, clientSecret string, opts ...Option) Client {
-	c := &client{
+// New returns Client
+func New(redirectURI, clientID, clientSecret string, opts ...Option) *Client {
+	c := &Client{
 		HTTPClient:   http.DefaultClient,
 		RedirectURI:  redirectURI,
 		ClientID:     clientID,
@@ -46,13 +42,13 @@ func New(redirectURI, clientID, clientSecret string, opts ...Option) Client {
 
 // WithHTTPClient set the http client
 func WithHTTPClient(httpClient *http.Client) Option {
-	return func(c *client) {
+	return func(c *Client) {
 		c.HTTPClient = httpClient
 	}
 }
 
 // GetAccessToken returns access token that published by line notify
-func (c *client) GetAccessToken(code string) (string, error) {
+func (c *Client) GetAccessToken(code string) (string, error) {
 	v := url.Values{}
 	v.Add("grant_type", "authorization_code")
 	v.Add("code", code)

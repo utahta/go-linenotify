@@ -28,12 +28,12 @@ func TestToken_Get(t *testing.T) {
 	}
 	req := New("http://localhost", "id", "secret", WithHTTPClient(httpClient))
 
-	token, err := req.GetAccessToken("code")
+	accessToken, err := req.GetAccessToken("code")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	if token != "test_token" {
-		t.Errorf("Expect token test_token, got %v", token)
+	if accessToken != "test_token" {
+		t.Errorf("Expect token test_token, got %v", accessToken)
 	}
 }
