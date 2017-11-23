@@ -15,7 +15,7 @@ import (
 )
 
 type (
-	// NotifyResponse
+	// NotifyResponse represents response that LINE Notify API
 	NotifyResponse struct {
 		Status    int    `json:"status"`
 		Message   string `json:"message"`
@@ -24,9 +24,10 @@ type (
 )
 
 var (
-	ErrNotifyInvalidAccessToken = errors.New("Invalid access token")
+	ErrNotifyInvalidAccessToken = errors.New("invalid access token")
 )
 
+// Notify provides convenient Notify* interface
 func (c *Client) Notify(token, message, imageThumbnail, imageFullsize string, image io.Reader) (*NotifyResponse, error) {
 	if image != nil {
 		return c.NotifyWithImage(token, message, image)
@@ -34,6 +35,12 @@ func (c *Client) Notify(token, message, imageThumbnail, imageFullsize string, im
 	return c.NotifyWithImageURL(token, message, imageThumbnail, imageFullsize)
 }
 
+// NotifyMessage notify text message
+func (c *Client) NotifyMessage(token, message string) (*NotifyResponse, error) {
+	return c.NotifyWithImageURL(token, message, "", "")
+}
+
+// NotifyWithImage notify text message and image by binary
 func (c *Client) NotifyWithImage(token, message string, image io.Reader) (*NotifyResponse, error) {
 	body, contentType, err := c.requestBodyWithImage(message, image)
 	if err != nil {
@@ -42,6 +49,7 @@ func (c *Client) NotifyWithImage(token, message string, image io.Reader) (*Notif
 	return c.notify(token, message, body, contentType)
 }
 
+// NotifyWithImageURL notify text message and image by url
 func (c *Client) NotifyWithImageURL(token, message, imageThumbnail, imageFullsize string) (*NotifyResponse, error) {
 	body, contentType, err := c.requestBody(message, imageThumbnail, imageFullsize)
 	if err != nil {
