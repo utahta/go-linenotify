@@ -1,6 +1,7 @@
 package token
 
 import (
+	"context"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -26,9 +27,9 @@ func TestToken_Get(t *testing.T) {
 		StatusCode: http.StatusOK,
 		Body:       `{"access_token": "test_token"}`,
 	}
-	req := New("http://localhost", "id", "secret", WithHTTPClient(httpClient))
+	cli := NewClient("http://localhost", "id", "secret", WithHTTPClient(httpClient))
 
-	accessToken, err := req.GetAccessToken("code")
+	accessToken, err := cli.GetAccessToken(context.Background(), "code")
 	if err != nil {
 		t.Fatal(err)
 	}

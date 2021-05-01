@@ -2,6 +2,7 @@ package linenotify
 
 import (
 	"bytes"
+	"context"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -22,7 +23,7 @@ func (t *notifyRoundTripper) RoundTrip(req *http.Request) (*http.Response, error
 }
 
 func TestClient_Notify(t *testing.T) {
-	c := New()
+	c := NewClient()
 	statusOK := `{"status":200,"message":"ok"}`
 	statusUnauthorized := `{"status":401,"message":"invalid access token"}`
 	tests := []struct {
@@ -42,7 +43,7 @@ func TestClient_Notify(t *testing.T) {
 	for _, test := range tests {
 		c.HTTPClient.Transport = &notifyRoundTripper{resp: test.resp}
 
-		_, err := c.Notify("token", "test", test.imageThumbnail, test.imageFullsize, test.image)
+		_, err := c.Notify(context.Background(), "token", "test", test.imageThumbnail, test.imageFullsize, test.image)
 		if err != test.expectedErr {
 			t.Errorf("%v err:%v", test.explain, err)
 		}
@@ -50,7 +51,7 @@ func TestClient_Notify(t *testing.T) {
 }
 
 func TestClient_requestBodyWithImage(t *testing.T) {
-	c := New()
+	c := NewClient()
 
 	c.HTTPClient.Transport = &notifyRoundTripper{
 		resp: &http.Response{StatusCode: http.StatusOK, Body: ioutil.NopCloser(strings.NewReader(""))},

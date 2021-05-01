@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"time"
@@ -44,8 +45,8 @@ func Callback(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	c := token.New(BaseURL+"/callback", ClientID, ClientSecret)
-	accessToken, err := c.GetAccessToken(resp.Code)
+	c := token.NewClient(BaseURL+"/callback", ClientID, ClientSecret)
+	accessToken, err := c.GetAccessToken(context.Background(), resp.Code)
 	if err != nil {
 		fmt.Fprintf(w, "error:%v", err)
 		return

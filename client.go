@@ -7,7 +7,7 @@ type Client struct {
 	HTTPClient *http.Client
 }
 
-// New returns *Client
-func New() *Client {
+// NewClient returns *Client
+func NewClient() *Client {
 	return &Client{HTTPClient: http.DefaultClient}
 }
