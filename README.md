@@ -1,7 +1,7 @@
 # go-linenotify
 
 [![GoDoc Reference](https://godoc.org/github.com/utahta/go-linenotify?status.svg)](http://godoc.org/github.com/utahta/go-linenotify)
-[![Build Status](https://travis-ci.org/utahta/go-linenotify.svg?branch=master)](https://travis-ci.org/utahta/go-linenotify)
+![GitHub Action Status](https://github.com/utahta/go-linenotify/actions/workflows/CI/badge.svg)
 [![GitHub release](https://img.shields.io/github/release/utahta/go-linenotify.svg)](https://github.com/utahta/go-linenotify/releases)
 
 Go client library for the [LINE Notify](https://notify-bot.line.me/doc/)
