@@ -2,6 +2,7 @@ package linenotify
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -28,54 +29,54 @@ var (
 )
 
 // Notify provides convenient Notify* interface
-func (c *Client) Notify(token, message, imageThumbnail, imageFullsize string, image io.Reader) (*NotifyResponse, error) {
+func (c *Client) Notify(ctx context.Context, token, message, imageThumbnail, imageFullsize string, image io.Reader) (*NotifyResponse, error) {
 	if image != nil {
-		return c.NotifyWithImage(token, message, image)
+		return c.NotifyWithImage(ctx, token, message, image)
 	}
-	return c.NotifyWithImageURL(token, message, imageThumbnail, imageFullsize)
+	return c.NotifyWithImageURL(ctx, token, message, imageThumbnail, imageFullsize)
 }
 
 // NotifyMessage notify text message
-func (c *Client) NotifyMessage(token, message string) (*NotifyResponse, error) {
-	return c.NotifyWithImageURL(token, message, "", "")
+func (c *Client) NotifyMessage(ctx context.Context, token, message string) (*NotifyResponse, error) {
+	return c.NotifyWithImageURL(ctx, token, message, "", "")
 }
 
 // NotifyWithImage notify text message and image by binary
-func (c *Client) NotifyWithImage(token, message string, image io.Reader) (*NotifyResponse, error) {
+func (c *Client) NotifyWithImage(ctx context.Context, token, message string, image io.Reader) (*NotifyResponse, error) {
 	body, contentType, err := c.requestBodyWithImage(message, image)
 	if err != nil {
 		return nil, err
 	}
-	return c.notify(token, message, body, contentType)
+	return c.notify(ctx, token, body, contentType)
 }
 
 // NotifyWithImageURL notify text message and image by url
-func (c *Client) NotifyWithImageURL(token, message, imageThumbnail, imageFullsize string) (*NotifyResponse, error) {
+func (c *Client) NotifyWithImageURL(ctx context.Context, token, message, imageThumbnail, imageFullsize string) (*NotifyResponse, error) {
 	body, contentType, err := c.requestBody(message, imageThumbnail, imageFullsize)
 	if err != nil {
 		return nil, err
 	}
-	return c.notify(token, message, body, contentType)
+	return c.notify(ctx, token, body, contentType)
 }
 
-func (c *Client) notify(token, message string, body io.Reader, contentType string) (*NotifyResponse, error) {
-	req, err := http.NewRequest("POST", "https://notify-api.line.me/api/notify", body)
+func (c *Client) notify(ctx context.Context, token string, body io.Reader, contentType string) (*NotifyResponse, error) {
+	req, err := http.NewRequestWithContext(ctx, "POST", "https://notify-api.line.me/api/notify", body)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to new request: %w", err)
 	}
 	req.Header.Set("Content-Type", contentType)
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
 
 	resp, err := c.HTTPClient.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to notify: %w", err)
 	}
 	defer resp.Body.Close()
 
 	nResp := &NotifyResponse{}
 	err = json.NewDecoder(resp.Body).Decode(nResp)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to decode notification response: %w", err)
 	}
 	nResp.RateLimit.Parse(resp.Header)
 
